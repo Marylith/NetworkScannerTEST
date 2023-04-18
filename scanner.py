@@ -1,19 +1,27 @@
 import socket
 
-host = input("Introduce la IP a escanear: ")
-ports = input("introduce los puertos a escanear (separados con ,): ")
+def leer_archivo(filename:str):
+    with open(filename, "r") as file:
+        lineas= file.readlines()
+        lineas_limpias=[]
+        for linea in lineas:
+            lineas_limpias.append(linea.rstrip())
+        return lineas_limpias
 
-ports = ports.split(",")
+hosts = leer_archivo("ips.txt")
 
-print(f"Se escanearán {len(ports)} para la IP: {host}")
+ports = leer_archivo("common_ports.txt")
 
-for actualport in ports:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(1)
+for host in hosts:
+    print(f"En la ip {host}")
+    for actualport in ports:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
 
-    result=sock.connect_ex((host, int(actualport)))
-    if result ==0:
-        print(f"El puerto {actualport} está abierto")
-    else:
-        print(f"El puerto {actualport} está cerrado")
-    sock.close()
+        result=sock.connect_ex((host, int(actualport)))
+        if result ==0:
+            print(f"El puerto {actualport} está abierto")
+        else:
+            print(f"El puerto {actualport} está cerrado")
+        sock.close()
+    print(f"\n")
